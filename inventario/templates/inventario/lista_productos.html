@@ -16,6 +16,7 @@
                 <th>Nombre</th>
                 <th>Precio</th>
                 <th>Stock</th>
+                <th>ACCIONES</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,11 @@
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.precio }}</td>
                     <td>{{ producto.stock}}</td>
+                    <td>
+                        <a href="/productos/{{ producto.id }}/editar" class="btn btn-warning btn-sm">
+                        EDITAR
+                        </a>
+                    </td>
                     
                 </tr>
             {% endfor %}

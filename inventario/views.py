@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto
-from .forms import ProductoForm
+from .models import Producto, Movimientos
+from .forms import ProductoForm, MovimientoForm
+
 
 # Create your views here.
 def lista_productos(request):
@@ -59,3 +60,50 @@ def eliminar_producto(request, id):
     
     return redirect('lista_productos')
   
+def crear_movimiento(request):
+    
+    if request.method == 'POST':
+        
+        form = MovimientoForm(request.POST)
+        
+        if form.is_valid():
+            
+            movimiento = form.save(commit=False)
+            
+            producto = movimiento.producto
+            
+            if movimiento.tipo == 'ENTRADA':
+                
+                producto.stock += movimiento.cantidad
+                
+            elif movimiento.tipo == 'SALIDA':
+                
+                if producto.stock < movimiento.cantidad:
+                    
+                    form.add_error(
+                        'cantidad',
+                        'Stock insuficiente'
+                    )
+                    
+                    return render(
+                        request,
+                        'inventario/crear_movimiento.html',
+                        {'form': form}
+                    )
+                
+                producto.stock -= movimiento.cantidad
+            
+            producto.save()
+            
+            movimiento.save()
+            
+            return redirect('lista_productos')
+        
+    else:
+        
+        form = MovimientoForm()
+            
+    return render(request,
+                      'inventario/crear_movimiento.html',
+                      {'form': form})
+        

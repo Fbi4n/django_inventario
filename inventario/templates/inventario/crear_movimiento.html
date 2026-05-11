@@ -1,0 +1,74 @@
+{% extends 'inventario/base.html' %}
+
+{% block content %}
+
+<h1 class="mb-4">Nuevo Movimiento</h1>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    {{form.as_p}}
+
+    <div class="d-flex gap-3 justify-content-center">
+        <button type='submit' class="btn btn-primary btn-lg px-5 shadow-sm">
+            GUARDAR 
+        </button>
+        <a href='/productos/' class="btn btn-secondary btn-lg px-5 shadow-sm">
+            SALIR
+        </a>
+    </div>
+
+</form>
+<div class="mt-4">
+
+    <h3>Total Estimado</h3>
+
+    <input type="text" 
+    id="precio" 
+    class="form-control mb-2"
+    placeholder="Precio">
+
+    <input type="number"
+           id="cantidad"
+           class="form-control mb-2"
+           placeholder="Cantidad">
+
+    <h4 id="total">
+        Total: 0
+    </h4>
+
+</div>
+
+<script>
+
+const precio = document.getElementById('precio')
+
+const cantidad = document.getElementById('cantidad')
+
+const total = document.getElementById('total')
+
+function calcularTotal() {
+
+    const p = parseFloat(precio.value) || 0
+
+    const c = parseInt(cantidad.value) || 0
+
+    total.textContent =
+        'Total: ' + (p * c)
+
+}
+
+precio.addEventListener(
+    'input',
+    calcularTotal
+)
+
+cantidad.addEventListener(
+    'input',
+    calcularTotal
+)
+
+</script>
+
+{% endblock content %}

@@ -50,5 +50,12 @@ def editar_producto(request, id):
     return render(request, 'inventario/editar_producto.html', {
         'form': form
     })
-        
-        
+    
+def eliminar_producto(request, id):
+    
+    producto = get_object_or_404(Producto, id=id)
+    
+    producto.delete()
+    
+    return redirect('lista_productos')
+  

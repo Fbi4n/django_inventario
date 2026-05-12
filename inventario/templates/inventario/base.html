@@ -44,5 +44,19 @@
     
     {% endblock content %}
    </nav>
+   {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="alert alert-success">
+
+                {{ message }}
+            
+            </div>
+        
+        {% endfor %}
+   
+   {% else %}
+   {% endif %}
 </body>
 </html>

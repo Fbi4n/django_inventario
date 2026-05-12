@@ -3,6 +3,8 @@ from .models import Producto, Movimientos, Categoria
 from .forms import ProductoForm, MovimientoForm
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.contrib import messages
 
 
 # Create your views here.
@@ -11,6 +13,9 @@ def lista_productos(request):
     
     productos = Producto.objects.all()
     
+    paginator = Paginator(productos, 5)  # Mostrar 10 productos por página
+    page_number = request.GET.get('page')
+    productos = paginator.get_page(page_number)
     return render(request, 'inventario/lista_productos.html',{
         'productos': productos
     })
@@ -23,6 +28,10 @@ def crear_producto(request):
         
         if form.is_valid():
             form.save()
+            messages.success(
+                request,
+                'Producto creado correctamente'
+            )
             
             return redirect('lista_productos')
         
@@ -44,6 +53,10 @@ def editar_producto(request, id):
         
         if form.is_valid():
             form.save()
+            messages.info(
+                request,
+                'Producto editado correctamente'
+            )
             
             return redirect('lista_productos')
         
@@ -60,6 +73,10 @@ def eliminar_producto(request, id):
     producto = get_object_or_404(Producto, id=id)
     
     producto.delete()
+    messages.error(
+        request,
+        'Producto eliminado correctamente'
+        )
     
     return redirect('lista_productos')
 @login_required  

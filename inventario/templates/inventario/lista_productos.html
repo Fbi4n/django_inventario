@@ -54,6 +54,45 @@
     {% endfor %}
   </tbody>
 </table>
+<div class="mt-4">
+
+    {% if productos.has_previous %}
+
+        <a href="?page=1" class="btn btn-outline-primary">
+          Primera
+        </a>
+
+        <a href="?page={{ productos.previous_page_number }}" class="btn btn-outline-primary">
+          Anterior
+        </a>
+
+        {% endif %}
+
+        <span class="mx-3">
+          Página
+          {{ productos.number }}
+          de
+          {{ productor.paginator.num_pages }}
+        </span>
+
+        {% if productos.has_next %}
+
+        <a href="?page={{ productos.next_page_number }}"
+           class="btn btn-outline-primary">
+
+            Siguiente
+
+        </a>
+
+        <a href="?page={{ productos.paginator.num_pages }}"
+           class="btn btn-outline-primary">
+
+            Última
+
+        </a>
+
+    {% endif %}
+</div>
  <script>
         const buscador = document.getElementById('busqueda')
 

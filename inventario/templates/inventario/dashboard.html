@@ -1,0 +1,79 @@
+{% extends 'inventario/base.html' %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center mb-3">
+            <div class="card-body">
+                <h5>Productos</h5>
+                <h2>{{ total_productos }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center mb-3">
+            <div class="card-body">
+                <h5>Categoria</h5>
+                <h2>{{ total_categorias }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3">
+        <div class="card text-center mb-3">
+            <div class="card-body">
+                <h5>Sin Stock</h5>
+                <h2>{{ productos_sin_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3">
+        <div class="card text-center mb-3">
+            <div class="card-body">
+                <h5>Stock total</h5>
+                <h2>{{ total_stock }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+<h3 class="mt-5">
+    Ultimos movimientos
+</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Tipo</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for movimiento in ultimos_movimientos %}
+        
+        <tr>
+            <td>
+                {{ movimiento.producto.nombre}}
+            </td>
+            <td>
+                {{ movimiento.tipo}}
+            </td>
+            <td>
+                {{ movimiento.cantidad}}
+            </td>
+            <td>
+                {{ movimiento.fecha}}
+            </td>
+        </tr>
+        
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

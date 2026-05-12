@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto, Movimientos
+from .models import Producto, Movimientos, Categoria
 from .forms import ProductoForm, MovimientoForm
+from django.db.models import Sum
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+@login_required
 def lista_productos(request):
     
     productos = Producto.objects.all()
@@ -11,7 +14,7 @@ def lista_productos(request):
     return render(request, 'inventario/lista_productos.html',{
         'productos': productos
     })
-    
+@login_required   
 def crear_producto(request):
     
     if request.method == 'POST':
@@ -30,7 +33,7 @@ def crear_producto(request):
     return render(request, 'inventario/crear_producto.html',{
         'form':form
     })
-    
+@login_required   
 def editar_producto(request, id):
         
     producto = get_object_or_404(Producto, id=id)
@@ -51,7 +54,7 @@ def editar_producto(request, id):
     return render(request, 'inventario/editar_producto.html', {
         'form': form
     })
-    
+@login_required    
 def eliminar_producto(request, id):
     
     producto = get_object_or_404(Producto, id=id)
@@ -59,7 +62,7 @@ def eliminar_producto(request, id):
     producto.delete()
     
     return redirect('lista_productos')
-  
+@login_required  
 def crear_movimiento(request):
     
     if request.method == 'POST':
@@ -107,3 +110,32 @@ def crear_movimiento(request):
                       'inventario/crear_movimiento.html',
                       {'form': form})
         
+
+@login_required
+def dashboard(request):
+
+    total_productos= Producto.objects.count()
+    
+    total_categorias = Categoria.objects.count()
+    
+    productos_sin_stock = Producto.objects.filter(stock__lte=0).count()
+    
+    total_stock = Producto.objects.aggregate(
+        Sum('stock')
+    )['stock__sum']
+    
+    ultimos_movimientos = Movimientos.objects.order_by('-fecha')[:5]
+    
+    context = {
+        'total_productos': total_productos,
+        
+        'total_categorias': total_categorias,
+        
+        'productos_sin_stock': productos_sin_stock,
+        
+        'total_stock': total_stock,
+        
+        'ultimos_movimientos': ultimos_movimientos
+    }
+    
+    return render(request,'inventario/dashboard.html', context)

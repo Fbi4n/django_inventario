@@ -1,0 +1,59 @@
+{% extends 'inventario/base.html' %}
+
+{% block content %}
+
+    <h1 class="mb-4">
+        Productos AJAX
+    </h1>
+    <button id="cargar" class="btn btn-primary mb-3">
+        Cargar Productos
+    </button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Categoría</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-productos">
+        
+        </tbody>
+    </table>
+    <script>
+        const boton = document.getElementById('cargar')
+
+        boton.addEventListener(
+            'click',
+            cargarProductos
+        )
+        function cargarProductos(){
+            fetch('/api/productos/')
+
+            .then(response => response.json())
+
+            .then(data => {
+
+               const tabla = document.getElementById('tabla-productos')
+
+               tabla.innerHTML = ''
+
+               data.forEach(producto =>{
+
+                tabla.innerHTML += `
+                <tr>
+
+                    <td>${producto.nombre}</td>
+                    <td>${producto.precio}</td>
+                    <td>${producto.stock}</td>
+                    <td>${producto.categoria}</td>
+
+                </tr>
+                `
+               })
+            })
+            
+        }
+    </script>
+{% endblock content %}

@@ -4,12 +4,20 @@
 <br />
 <a href="/producto/crear/" class="btn btn-success mb-3"> Agrega</a>
 <a href="/movimientos/crear/" class="btn btn-primary mb-3">Nuevo Movimiento</a>
-<input type="text" id="busqueda" class="form-control mb-3" placeholder="Buscar Producto">
 <select id="filtroStock" class="form-select mb-3">
     <option value="todos">Todos</option>
     <option value="con_stock">Con Stock</option>
     <option value="sin_stock">Sin Stock</option>
 </select>
+<form method="GET"
+      class="mb-3">
+
+    <input type="text"
+           name="busqueda"
+           id="busqueda"
+           class="form-control"
+           placeholder="Buscar producto o categoría">
+</form>
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -58,24 +66,32 @@
 
     {% if productos.has_previous %}
 
-        <a href="?page=1" class="btn btn-outline-primary">
-          Primera
+        <a href="?page=1"
+           class="btn btn-outline-primary">
+
+            Primera
+
         </a>
 
-        <a href="?page={{ productos.previous_page_number }}" class="btn btn-outline-primary">
-          Anterior
+        <a href="?page={{ productos.previous_page_number }}"
+           class="btn btn-outline-primary">
+
+            Anterior
+
         </a>
 
-        {% endif %}
+    {% endif %}
 
-        <span class="mx-3">
-          Página
-          {{ productos.number }}
-          de
-          {{ productor.paginator.num_pages }}
-        </span>
+    <span class="mx-3">
 
-        {% if productos.has_next %}
+        Página
+        {{ productos.number }}
+        de
+        {{ productos.paginator.num_pages }}
+
+    </span>
+
+    {% if productos.has_next %}
 
         <a href="?page={{ productos.next_page_number }}"
            class="btn btn-outline-primary">
@@ -92,6 +108,7 @@
         </a>
 
     {% endif %}
+
 </div>
  <script>
         const buscador = document.getElementById('busqueda')

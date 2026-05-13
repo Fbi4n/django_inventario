@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import lista_productos, crear_producto, editar_producto, eliminar_producto, crear_movimiento, dashboard
+from .views import lista_productos, crear_producto, editar_producto, eliminar_producto, crear_movimiento, dashboard, api_productos, productos_ajax
 
 
 urlpatterns = [
@@ -9,5 +9,7 @@ urlpatterns = [
     path('productos/<int:id>/eliminar/', eliminar_producto, name='eliminar_producto'),
     path('movimientos/crear/', crear_movimiento, name='crear_movimiento'),
     path('', dashboard, name='dashboard'),
+    path('api/productos/', api_productos, name='api_productos'),
+    path('productos/ajax/', productos_ajax, name='productos_ajax')
   
 ]

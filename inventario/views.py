@@ -1,24 +1,52 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto, Movimientos, Categoria
+from .models import Producto, Movimiento, Categoria
 from .forms import ProductoForm, MovimientoForm
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.http import JsonResponse
 
 
 # Create your views here.
 @login_required
 def lista_productos(request):
-    
-    productos = Producto.objects.all()
-    
-    paginator = Paginator(productos, 5)  # Mostrar 10 productos por página
+
+    productos_lista = Producto.objects.select_related(
+        'categoria',
+        'proveedor'
+    )
+
+    busqueda = request.GET.get('buscar')
+
+    if busqueda:
+
+        productos_lista = productos_lista.filter(
+
+            Q(nombre__icontains=busqueda)
+            |
+            Q(categoria__nombre__icontains=busqueda)
+
+        )
+
+    paginator = Paginator(
+        productos_lista,
+        5
+    )
+
     page_number = request.GET.get('page')
+
     productos = paginator.get_page(page_number)
-    return render(request, 'inventario/lista_productos.html',{
-        'productos': productos
-    })
+
+    return render(
+        request,
+        'inventario/lista_productos.html',
+        {
+            'productos': productos
+        }
+    )
+    
+#--------------------------------------------------------------------#
 @login_required   
 def crear_producto(request):
     
@@ -42,6 +70,8 @@ def crear_producto(request):
     return render(request, 'inventario/crear_producto.html',{
         'form':form
     })
+    
+#--------------------------------------------------------------------#
 @login_required   
 def editar_producto(request, id):
         
@@ -67,6 +97,8 @@ def editar_producto(request, id):
     return render(request, 'inventario/editar_producto.html', {
         'form': form
     })
+    
+#--------------------------------------------------------------------#
 @login_required    
 def eliminar_producto(request, id):
     
@@ -79,6 +111,8 @@ def eliminar_producto(request, id):
         )
     
     return redirect('lista_productos')
+
+#--------------------------------------------------------------------#
 @login_required  
 def crear_movimiento(request):
     
@@ -128,6 +162,8 @@ def crear_movimiento(request):
                       {'form': form})
         
 
+
+#--------------------------------------------------------------------#
 @login_required
 def dashboard(request):
 
@@ -141,7 +177,7 @@ def dashboard(request):
         Sum('stock')
     )['stock__sum']
     
-    ultimos_movimientos = Movimientos.objects.order_by('-fecha')[:5]
+    ultimos_movimientos = Movimiento.objects.order_by('-fecha')[:5]
     
     context = {
         'total_productos': total_productos,
@@ -156,3 +192,30 @@ def dashboard(request):
     }
     
     return render(request,'inventario/dashboard.html', context)
+
+#--------------------------------------------------------------------#
+@login_required
+def api_productos(request):
+    
+    productos = Producto.objects.all()
+    
+    data = []
+    
+    for producto in productos:
+        data.append({
+            'id': producto.id,
+            'nombre': producto.nombre,
+            'precio': float(producto.precio),
+            'stock': producto.stock,
+            'categoria': producto.categoria.nombre,
+        })
+    return JsonResponse(data, safe=False)
+
+#--------------------------------------------------------------------#
+@login_required
+def productos_ajax(request):
+    
+    return render(
+        request,
+        'inventario/productos_ajax.html'
+    )

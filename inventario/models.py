@@ -28,7 +28,7 @@ class Producto(models.Model):
         return self.nombre
     
     
-class Movimientos(models.Model):
+class Movimiento(models.Model):
     
     TIPO_MOVIMIENTO = (
         ('ENTRADA', 'Entrada'),

@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from .models import Producto, Movimiento, Categoria
 from .forms import ProductoForm, MovimientoForm
 from django.db.models import Sum, Q
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.http import JsonResponse
+from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ProductoSerializer
 
 
 # Create your views here.
@@ -219,3 +224,44 @@ def productos_ajax(request):
         request,
         'inventario/productos_ajax.html'
     )
+#--------------------------------------------------------------------#
+class ProductoApiView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        productos = Producto.objects.all()
+
+        serializer = ProductoSerializer(
+            productos,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+    def post(self, request):
+
+        serializer = ProductoSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(
+            serializer.errors,
+            status=400
+        )
+        
+#--------------------------------------------------------------------#
+class ProductoViewSet(viewsets.ModelViewSet):
+    
+    queryset = Producto.objects.all()
+    
+    serializer_class = ProductoSerializer

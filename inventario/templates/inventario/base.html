@@ -30,20 +30,21 @@
         </form>
     {% endif %}
 </div>
-   <nav class="mb-4">
-    <a href="/" class="btn btn-dark">
+   <nav class="navbar navbar-dark bg-dark">
+    <a href="/" class="navbar-brand">
         Dashboard
     </a>
-    <a href="/productos/" class="btn btn-primary">
+    <a href="/productos/" class="navbar-brand">
         Producto
     </a>
-    <a href="/movimientos/crear/" class="btn btn-success">
+    <a href="/movimientos/crear/" class="navbar-brand">
         Movimiento
     </a>
+   </nav>
     {% block content %}
     
     {% endblock content %}
-   </nav>
+
    {% if messages %}
 
         {% for message in messages %}

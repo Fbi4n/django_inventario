@@ -1,6 +1,12 @@
 from django.urls import path
-from .views import lista_productos, crear_producto, editar_producto, eliminar_producto, crear_movimiento, dashboard, api_productos, productos_ajax
+from .views import lista_productos, crear_producto, editar_producto, eliminar_producto, crear_movimiento, dashboard, api_productos, productos_ajax, ProductoApiView, ProductoViewSet
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
+router.register(
+    r'productos',
+    ProductoViewSet
+)   
 
 urlpatterns = [
     path('productos/', lista_productos, name='lista_productos'),
@@ -10,6 +16,9 @@ urlpatterns = [
     path('movimientos/crear/', crear_movimiento, name='crear_movimiento'),
     path('', dashboard, name='dashboard'),
     path('api/productos/', api_productos, name='api_productos'),
-    path('productos/ajax/', productos_ajax, name='productos_ajax')
+    path('productos/ajax/', productos_ajax, name='productos_ajax'),
+    path('api/drf/productos/', ProductoApiView.as_view(),name='api_drf_productos'),
   
 ]
+
+urlpatterns += router.urls

@@ -9,8 +9,10 @@ from django.contrib import messages
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from .serializers import ProductoSerializer
+from .permissions import EsAdminOPersonal
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
 # Create your views here.
@@ -265,3 +267,29 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     
     serializer_class = ProductoSerializer
+    
+    def get_permissions(self):
+        
+        if self.action in ['create','update','partial_update','detroy']:
+            
+            permission_classes = [
+                EsAdminOPersonal    
+            ]
+        else:
+            
+            permission_classes = [
+                IsAuthenticated
+            ]
+        
+        return [permission() for permission in permission_classes]
+    
+#--------------------------------------------------------------------#
+class SoloLecturaOPersonal(BasePermission):
+
+    def has_permission(self, request, view):
+
+        if request.method in ['GET']:
+
+            return True
+
+        return request.user and request.user.is_staff
